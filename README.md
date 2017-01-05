@@ -13,14 +13,15 @@ Enabling People Picker control on SharePoint 2013/SharePoint 2016/Office 365.
 
 
 
+
 To create people picker user
 
 
 
-$("#PeoplePicker1").spPeoplePicker();
+	$("#PeoplePicker1").spPeoplePicker();
 
 
-$("#PeoplePicker2").spPeoplePicker();
+	$("#PeoplePicker2").spPeoplePicker();
 
 
 
