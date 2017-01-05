@@ -1,5 +1,4 @@
 (function ($) {
-
     RegisterScriptFiles('clienttemplates.js');
     RegisterScriptFiles('clientforms.js');
     RegisterScriptFiles('clientpeoplepicker.js');
@@ -12,9 +11,8 @@
         document.getElementsByTagName("head")[0].appendChild(scriptEle)
 
     }
-    // Render and initialize the client-side People Picker.
+
     function initializePeoplePicker(eleId) {
-        // Create a schema to store picker properties, and set the properties.
         var schema = {};
         schema['PrincipalAccountType'] = 'User,DL,SecGroup,SPGroup';
         schema['SearchPrincipalSource'] = 15;
@@ -22,27 +20,24 @@
         schema['AllowMultipleValues'] = true;
         schema['MaximumEntitySuggestions'] = 50;
         schema['Width'] = '280px';
-        // Render and initialize the picker. 
-        // Pass the ID of the DOM element that contains the picker, an array of initial
-        // PickerEntity objects to set the picker value, and a schema that defines
-        // picker properties.
         this.SPClientPeoplePicker_InitStandaloneControlWrapper(eleId, null, schema);
     }
 
-    function GetPeoplePickerIds(eleId) {
+    function GetPeoplePicker(eleId) {
         var toSpanKey = eleId + "_TopSpan";
         var peoplePicker = null;
-
-        // Get the people picker object from the page.
-        //var peoplePicker = this.SPClientPeoplePicker.SPClientPeoplePickerDict.peoplePickerDiv_TopSpan;
         var ClientPickerDict = this.SPClientPeoplePicker.SPClientPeoplePickerDict;
-        // Get the people picker object from the page.
         for (var propertyName in ClientPickerDict) {
             if (propertyName == toSpanKey) {
                 peoplePicker = ClientPickerDict[propertyName];
                 break;
             }
         }
+        return peoplePicker;
+    }
+
+    function GetPeoplePickerIds(eleId) {
+        var peoplePicker = GetPeoplePicker(eleId);
         if (peoplePicker != null) {
             // Get information about all users.
             var users = peoplePicker.GetAllUserInfo();
@@ -55,26 +50,12 @@
 
             }
             return userInfo;
-        }
-        else
+        } else
             return '';
     }
 
-    
     function GetPeoplePickerNames(eleId) {
-        var toSpanKey = eleId + "_TopSpan";
-        var peoplePicker = null;
-
-        // Get the people picker object from the page.
-        //var peoplePicker = this.SPClientPeoplePicker.SPClientPeoplePickerDict.peoplePickerDiv_TopSpan;
-        var ClientPickerDict = this.SPClientPeoplePicker.SPClientPeoplePickerDict;
-        // Get the people picker object from the page.
-        for (var propertyName in ClientPickerDict) {
-            if (propertyName == toSpanKey) {
-                peoplePicker = ClientPickerDict[propertyName];
-                break;
-            }
-        }
+        var peoplePicker = GetPeoplePicker(eleId);
         if (peoplePicker != null) {
             // Get information about all users.
             var users = peoplePicker.GetAllUserInfo();
@@ -84,48 +65,82 @@
                 userInfo += user['DisplayText'] + ";#";
             }
             return userInfo;
-        }
-        else
+        } else
             return '';
     }
 
-    function GetPeoplePickerUserID(userNameString) 
-    {
-        var itemID = "";
-
-            $.ajax({
-                url: _spPageContextInfo.siteAbsoluteUrl + "/_api/web/siteusers(@v)?@v='" + encodeURIComponent(userNameString) + "'",
-                method: "GET",
-                async:false,
-                headers: { "Accept": "application/json; odata=verbose" },
-                success:function(data){
-                    itemID = data.d.Id;
-                },
-                error:function(err){
-                    console.log(err);
+    function SetUserInPeoplePicker(eleId, userIDArray) {
+        var peoplePicker = GetPeoplePicker(eleId);
+        if (peoplePicker != null) {
+            userIDArray.forEach(function (item) {
+                var userInfo = GetUserInfoByID(item);
+                if (userInfo != null) {
+                    peoplePicker.AddUserKeys(userInfo.LoginName, false);
                 }
-            });
-        
+            })
+        }
+    }
+
+    function GetPeoplePickerUserID(userNameString) {
+        var itemID = "";
+        $.ajax({
+            url: _spPageContextInfo.siteAbsoluteUrl + "/_api/web/siteusers(@v)?@v='" + encodeURIComponent(userNameString) + "'",
+            method: "GET",
+            async: false,
+            headers: {
+                "Accept": "application/json; odata=verbose"
+            },
+            success: function (data) {
+                itemID = data.d.Id;
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        });
+
         return itemID;
     }
 
+    function GetUserInfoByID(ID) {
+        var userInfo = "";
+        $.ajax({
+            url: _spPageContextInfo.siteAbsoluteUrl + "/_api/web/getuserbyid(" + ID + ")",
+            method: "GET",
+            async: false,
+            headers: {
+                "Accept": "application/json; odata=verbose"
+            },
+            success: function (data) {
+                userInfo = data.d;
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        });
+        return userInfo;
+    }
 
     $.fn.spPeoplePicker = function () {
         var eleId = $(this).attr('id');
-        ExecuteOrDelayUntilScriptLoaded(function () { initializePeoplePicker(eleId); }, 'sp.core.js');
+        ExecuteOrDelayUntilScriptLoaded(function () {
+            initializePeoplePicker(eleId);
+        }, 'sp.core.js');
     };
-
-    // Query the picker for user information.
-    $.fn.getUserNames = function () {
+    $.fn.GetUserNames = function () {
         var eleId = $(this).attr('id');
         var spUsersInfo = GetPeoplePickerNames(eleId);
         return spUsersInfo.slice(0, -2);
     }
-
-    $.fn.getUserIDs = function () {
+    $.fn.GetUserIDs = function () {
         var eleId = $(this).attr('id');
         var spUsersInfo = GetPeoplePickerIds(eleId);
-        return spUsersInfo.slice(0, -2);
+        return spUsersInfo;
     }
-
+    $.fn.SetUserIDs = function (items) {
+        if (items.length > 0) {
+            var eleId = $(this).attr('id');
+            var spUsersInfo = SetUserInPeoplePicker(eleId, items);
+            return spUsersInfo;
+        }
+    }
 })(jQuery);
