@@ -21,7 +21,7 @@ To create people picker user
 
 
 
-##Functionalities
+# Functionalities
 
 
 •	Easy to initialize and can work with multiple people picker
@@ -33,7 +33,7 @@ To create people picker user
 •	Set user value in people picker directly by user IDs(Array of user Ids)
 
 
-##Get all user’s display name
+# Get all user’s display name
 
 
 
@@ -45,7 +45,7 @@ To create people picker user
 
 
 
-##Get all user’s IDs(Return array of user IDs)
+# Get all user’s IDs(Return array of user IDs)
 
 	var userIdsInPeoplePicker1 = $("#PeoplePicker1").getUserIDs();
 	var userIdsInPeoplePicker2 = $("#PeoplePicker2").getUserIDs();
