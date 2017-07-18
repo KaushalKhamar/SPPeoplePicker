@@ -12,7 +12,9 @@ Enabling People Picker control on SharePoint 2013/SharePoint 2016/Office 365.
 To create people picker user
 
 
-
+	<div id="PeoplePicker1"></div>
+	<div id="PeoplePicker2"></div>
+	
 	$("#PeoplePicker1").spPeoplePicker();
 	$("#PeoplePicker2").spPeoplePicker();
 
@@ -54,7 +56,7 @@ To create people picker user
 
 
 
-##Set user's name in people picker
+# Set user's name in people picker
 	var PeoplePicker1ArrayOfUserIDs = [1,2,3];
 	var PeoplePicker2ArrayOfUserIDs = [5];
 
