@@ -24,16 +24,18 @@
     }
 
     function GetPeoplePicker(eleId) {
-        var toSpanKey = eleId + "_TopSpan";
-        var peoplePicker = null;
-        var ClientPickerDict = this.SPClientPeoplePicker.SPClientPeoplePickerDict;
-        for (var propertyName in ClientPickerDict) {
-            if (propertyName == toSpanKey) {
-                peoplePicker = ClientPickerDict[propertyName];
-                break;
-            }
-        }
-        return peoplePicker;
+	    if(eleId != undefined){
+	        var toSpanKey = eleId + "_TopSpan";
+	        var peoplePicker = null;
+	        var ClientPickerDict = this.SPClientPeoplePicker.SPClientPeoplePickerDict;
+	        for (var propertyName in ClientPickerDict) {
+	            if (propertyName == toSpanKey) {
+	                peoplePicker = ClientPickerDict[propertyName];
+	                break;
+	            }
+	        }
+	        return peoplePicker;
+	    }
     }
 
     function GetPeoplePickerIds(eleId) {
@@ -84,11 +86,12 @@
     function GetPeoplePickerUserID(userNameString) {
         var itemID = "";
         $.ajax({
-            url: _spPageContextInfo.siteAbsoluteUrl + "/_api/web/siteusers(@v)?@v='" + encodeURIComponent(userNameString) + "'",
-            method: "GET",
+            url: _spPageContextInfo.webAbsoluteUrl + "/_api/web/ensureUser('" + encodeURIComponent(userNameString) + "')",
+            method: "POST",
             async: false,
             headers: {
-                "Accept": "application/json; odata=verbose"
+                "Accept": "application/json; odata=verbose",
+                "X-RequestDigest": $("#__REQUESTDIGEST").val()
             },
             success: function (data) {
                 itemID = data.d.Id;
@@ -97,14 +100,14 @@
                 console.log(err);
             }
         });
-
+        
         return itemID;
     }
 
     function GetUserInfoByID(ID) {
         var userInfo = "";
         $.ajax({
-            url: _spPageContextInfo.siteAbsoluteUrl + "/_api/web/getuserbyid(" + ID + ")",
+            url: _spPageContextInfo.webAbsoluteUrl + "/_api/web/getuserbyid(" + ID + ")",
             method: "GET",
             async: false,
             headers: {
