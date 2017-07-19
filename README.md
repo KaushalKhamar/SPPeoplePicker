@@ -39,8 +39,8 @@ To create people picker user
 
 
 
-	var userNamesInPeoplePicker1 = $("#PeoplePicker1").getUserNames();
-	var userNamesInPeoplePicker2 = $("#PeoplePicker2").getUserNames();
+	var userNamesInPeoplePicker1 = $("#PeoplePicker1").GetUserNames();
+	var userNamesInPeoplePicker2 = $("#PeoplePicker2").GetUserNames();
 
 
 
@@ -49,8 +49,8 @@ To create people picker user
 
 # Get all user’s IDs(Return array of user IDs)
 
-	var userIdsInPeoplePicker1 = $("#PeoplePicker1").getUserIDs();
-	var userIdsInPeoplePicker2 = $("#PeoplePicker2").getUserIDs();
+	var userIdsInPeoplePicker1 = $("#PeoplePicker1").GetUserIDs();
+	var userIdsInPeoplePicker2 = $("#PeoplePicker2").GetUserIDs();
 
 
 
