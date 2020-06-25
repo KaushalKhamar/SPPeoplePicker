@@ -86,9 +86,13 @@
     function GetPeoplePickerUserID(userNameString) {
         var itemID = "";
         $.ajax({
-            url: _spPageContextInfo.webAbsoluteUrl + "/_api/web/ensureUser('" + encodeURIComponent(userNameString) + "')",
+            url: _spPageContextInfo.webAbsoluteUrl + "/_api/web/ensureuser",
             method: "POST",
             async: false,
+            contentType: "application/json;odata=verbose",
+            data: JSON.stringify({
+                logonName: userNameString
+            }),
             headers: {
                 "Accept": "application/json; odata=verbose",
                 "X-RequestDigest": $("#__REQUESTDIGEST").val()
